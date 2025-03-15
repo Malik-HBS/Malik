@@ -106,7 +106,7 @@
             apiKey: "AIzaSyB2OkI4mcE92TtGjf3bPyU6dnD3VDkActw",
             authDomain: "presentation-poll-b4e9a.firebaseapp.com",
             projectId: "presentation-poll-b4e9a",
-            storageBucket: "presentation-poll-b4e9a.firebaseapp.com",
+            storageBucket: "presentation-poll-b4e9a.appspot.com",
             messagingSenderId: "889078524731",
             appId: "1:889078524731:web:957ec2807e8ec9b433e51e"
         };
@@ -116,7 +116,7 @@
         const votesRef = db.collection("votes");
 
         function hasVoted() {
-            return localStorage.getItem("userVoted");
+            return localStorage.getItem("userVoted") === "true";
         }
 
         function setVoted() {
@@ -176,6 +176,7 @@
                 const snapshot = await votesRef.get();
                 snapshot.docs.forEach(async doc => await votesRef.doc(doc.id).delete());
                 localStorage.removeItem("userVoted");
+                alert("Votes have been reset. You can now vote again.");
                 location.reload();
             } else {
                 alert("Incorrect password.");
