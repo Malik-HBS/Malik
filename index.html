@@ -227,6 +227,7 @@
 
             // Set a flag in localStorage to indicate the user has voted
             localStorage.setItem("hasVoted", true);
+            console.log("Vote recorded and localStorage flag set.");
 
             // Redirect to results page
             window.location.href = "#results";
@@ -312,6 +313,7 @@
 
                 // Clear the localStorage flag to allow voting again
                 localStorage.removeItem("hasVoted");
+                console.log("Votes reset and localStorage flag cleared.");
 
                 // Hide results and show voting buttons
                 document.getElementById("chartContainer").style.display = "none";
