@@ -195,6 +195,9 @@
     // Initialize votes collection
     const votesRef = db.collection("votes");
 
+    // Check if the user has already voted in this session
+    const hasVoted = localStorage.getItem("hasVoted");
+
     // Real-time listener for vote count
     let totalVotes = 0;
     votesRef.onSnapshot((snapshot) => {
@@ -210,11 +213,20 @@
     // Voting logic
     document.querySelectorAll(".vote-btn").forEach(button => {
         button.addEventListener("click", async () => {
+            // Check if the user has already voted
+            if (localStorage.getItem("hasVoted")) {
+                alert("You have already voted in this session.");
+                return;
+            }
+
             // Add vote to Firestore
             await votesRef.add({
                 rating: button.dataset.rating,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
+
+            // Set a flag in localStorage to indicate the user has voted
+            localStorage.setItem("hasVoted", true);
 
             // Redirect to results page
             window.location.href = "#results";
@@ -297,6 +309,9 @@
                 snapshot.docs.forEach(async (doc) => {
                     await votesRef.doc(doc.id).delete();
                 });
+
+                // Clear the localStorage flag to allow voting again
+                localStorage.removeItem("hasVoted");
 
                 // Hide results and show voting buttons
                 document.getElementById("chartContainer").style.display = "none";
