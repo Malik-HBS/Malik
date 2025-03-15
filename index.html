@@ -229,51 +229,56 @@
         // Results chart and text
         let chartInstance = null;
         async function showResults() {
-            const snapshot = await votesRef.get();
-            const votes = snapshot.docs.map(doc => doc.data().rating);
-            
-            const counts = {
-                "very-good": votes.filter(v => v === "very-good").length,
-                "good": votes.filter(v => v === "good").length,
-                "ok": votes.filter(v => v === "ok").length,
-                "meh": votes.filter(v => v === "meh").length
-            };
+        const snapshot = await votesRef.get();
+        const votes = snapshot.docs.map(doc => doc.data().rating);
+        
+        const counts = {
+            "very-good": votes.filter(v => v === "very-good").length,
+            "good": votes.filter(v => v === "good").length,
+            "ok": votes.filter(v => v === "ok").length,
+            "meh": votes.filter(v => v === "meh").length
+        };
 
-            // Update results text
-            const resultsText = document.getElementById("resultsText");
-            resultsText.innerHTML = `
-                <p><span>Very Good 🌟:</span> ${counts["very-good"]} votes</p>
-                <p><span>Good 👍:</span> ${counts["good"]} votes</p>
-                <p><span>OK 👌:</span> ${counts["ok"]} votes</p>
-                <p><span>Meh 😐:</span> ${counts["meh"]} votes</p>
-            `;
+        // Update results text
+        const resultsText = document.getElementById("resultsText");
+        resultsText.innerHTML = `
+            <p><span>Very Good 🌟:</span> ${counts["very-good"]} votes</p>
+            <p><span>Good 👍:</span> ${counts["good"]} votes</p>
+            <p><span>OK 👌:</span> ${counts["ok"]} votes</p>
+            <p><span>Meh 😐:</span> ${counts["meh"]} votes</p>
+        `;
 
-            // Chart.js graph
-            const ctx = document.getElementById("resultsChart").getContext("2d");
-            if (chartInstance) chartInstance.destroy();
+        // Chart.js Bar Chart
+        const ctx = document.getElementById("resultsChart").getContext("2d");
+        if (chartInstance) chartInstance.destroy();
 
-            chartInstance = new Chart(ctx, {
-                type: "doughnut",
-                data: {
-                    labels: ["Very Good 🌟", "Good 👍", "OK 👌", "Meh 😐"],
-                    datasets: [{
-                        data: Object.values(counts),
-                        backgroundColor: ["#6366f1", "#a855f7", "#f472b6", "#94a3b8"],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: "bottom" },
-                        tooltip: { enabled: false }
+        chartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: ["Very Good 🌟", "Good 👍", "OK 👌", "Meh 😐"],
+                datasets: [{
+                    data: Object.values(counts),
+                    backgroundColor: ["#6366f1", "#a855f7", "#f472b6", "#94a3b8"],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
                 }
-            });
+            }
+        });
 
-            document.getElementById("chartContainer").style.display = "block";
-            document.getElementById("resetButton").style.display = "block";
-        }
+        document.getElementById("chartContainer").style.display = "block";
+        document.getElementById("resetButton").style.display = "block";
+    }s
 
         // Reset button logic
         const resetButton = document.getElementById("resetButton");
